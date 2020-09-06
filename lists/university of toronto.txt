@@ -1,0 +1,10 @@
+Jimmy Ba
+Brendan Frey
+Nitish Srivastava
+Radford Neal
+Raquel Urtasun
+Richard Zemel
+Alan Aspuru-Guzik
+David J Fleet
+Konstantinos N Plataniotis
+Oleksandr Voznyy

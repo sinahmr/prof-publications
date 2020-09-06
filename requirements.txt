@@ -1,0 +1,2 @@
+sanic==20.6.3 
+beautifulsoup4==4.9.1
