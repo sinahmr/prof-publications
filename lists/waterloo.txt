@@ -8,4 +8,4 @@ Alexander Wong
 Chris Eliasmith
 Chris Bauch
 Roger G. Melko
-Ali Ghodsi 
+ali gHodsi
