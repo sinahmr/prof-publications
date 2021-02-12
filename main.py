@@ -24,15 +24,14 @@ async def root(request):
     items = list()
     for university in universities:
         uni_logo = utils.get_university_logo(Sess, university)
-        logo_tag = utils.make_img_tag(uni_logo, classes="w3-margin-left w3-padding-left")
+        logo_tag = utils.make_img_tag(uni_logo, (100, 100), classes="w3-margin w3-padding-left w3-padding-right")
         href_tag = utils.make_link_tag(quote(university), utils.titlify(university))
-        items.append(logo_tag + '&nbsp;' + href_tag + '<br>')
+        items.append({
+            'logo': logo_tag,
+            'href': href_tag
+        })
 
-    # head_tag = globals()['head_tag'] % "Universities"
-    # heading = globals()['heading'] % "Universities"
-    # header = globals()['header'] % heading
-    uni_list = '<div class="w3-container">%s</div>' % '\n'.join(items)
-    # return response.html(f'<html>%s<body>%s %s</body></html>' % (head_tag, header, uni_list))
+    uni_list = utils.tabelify_universities(items)
     return response.html(utils.htmlify("Universities", "Universities", uni_list))
 
 @app.route("/favicon.ico")
