@@ -1,3 +1,5 @@
+from bs4 import BeautifulSoup
+
 def titlify(title:str)->str():
     """Capitalize first letters of every word in title except conjunction letters
        E.g., titlify('welcome to the new world') ==> 'Welcome to the New World'
@@ -12,35 +14,79 @@ def titlify(title:str)->str():
             else "%s "%word.capitalize()
             for word in str(title).lower().split()])[:-1]
 
-styles = '<link rel="stylesheet" href="./styles/w3.css">'
+styles = ['<link rel="stylesheet" href="styles/w3.css">',
+          '<link rel="stylesheet" href="styles/style.css">',]
 
-def htmlify(header_title:str, content:str)->str():
+def htmlify(head_title:str, heading:str, content:str)->str():
     """
     """
-    head_tag = f"<head><title>%s</title>{styles}</head>" % header_title
-    heading = "<h2>%s</h2>" % header_title
-    header = '<header class="w3-bar w3-blue">%s</header>' % heading
+    head_tag = f"<head><title>%s</title>{''.join(styles)}</head>" % head_title
+    header = '<header class="w3-bar w3-card"><h2>%s</h2></header>' % heading
     html = f'''
         <!doctype html>
         <html>%s
         <body>%s
-        %s</body>
-        </html>''' % (head_tag, header, content)
+        <div class="content">%s</div></body>
+        %s
+        </html>''' % (head_tag, header, content, make_footer())
 
     return html
 
-def make_img_tag(img:str, size:(int, int)=(50, 50))->str():
-    """
-    """
-    img_tag = '''
-        <img src=%s
-        width="50px" height="50px"
-        style="vertical-align:middle;margin: 1em .5em 1em .5em">
-    ''' % img
-    return img_tag
+def make_footer()->str():
+    """Creates a simple footer content"""
+    return '''<footer class=" w3-footer">
+        Professors\' Publications Finder,  2021
+        <a class="w3-text-red w3-right" href="https://github.com/nrasadi/prof-publications">Github</a>
+        </footer>'''
 
-def make_link_tag(link:str, title:str)->str():
+def make_img_tag(img:str, size:(int, int)=(50, 50), classes:str='img')->str():
     """
     """
-    href = '<a href="%s">%s</a>\n' % (link, title)
+    img_tag = f'''<img src=%s width="{size[0]}" height="{size[1]}" class={classes}>''' % img
+    return img_tag.strip()
+
+def make_link_tag(link:str, title:str, classes:str='link')->str():
+    """
+    """
+    href = '<a href="%s" classes="%s">%s</a>\n' % (link, classes, title)
     return href
+
+def get_university_logo(Sess, university_name:str)->str():
+    university_logo_base_link = 'https://www.google.com/search?q=university+%s+logo+wikipedia&sclient=img&tbm=isch'
+    uni_logo_page = Sess.get(university_logo_base_link % university_name)
+    soup = BeautifulSoup(uni_logo_page.text, 'html.parser')
+    return soup.find_all('img')[1].attrs['src']
+
+def professors_info(professors:list)->str():
+    card = '''<div class="w3-col w3-center">
+            %s <br>
+            %s <br>
+            <a target="_blank" href="%s">Auto</a>&nbsp;
+            <a target="_blank" href="%s">Scholar</a>&nbsp;
+            <a target="_blank" href="%s">Search</a>&nbsp;
+            </div>'''
+    grid = '<div class="w3-row-padding w3-margin-bottom w3-margin-top">'
+    idx = 1
+    for i, prof in enumerate(professors):
+        if prof['break']:
+            grid += '<hr>'
+            idx = 1
+            continue
+
+        grid += card % (prof['photo'], prof['name'], prof['auto'], prof['scholar'], prof['search'])
+
+        if i == len(professors) - 1:
+            grid += '</div>'
+        elif idx % 3 == 0:
+            grid += ' </div><div class="w3-row-padding w3-margin-bottom w3-margin-top">'
+
+        idx += 1
+
+    return BeautifulSoup(grid, 'html.parser')
+    # base_row = f'''
+    #     <tr>
+    #     <td>%s &nbsp; &nbsp;</td>
+    #     <td><a target="_blank" href="%s">%s Auto</a>&nbsp; &nbsp;</td>
+    #     <td><a target="_blank" href="%s">Scholar</a>&nbsp; &nbsp;</td>
+    #     <td><a target="_blank" href="%s">Search</a></td>
+    #     </tr>'''
