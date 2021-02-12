@@ -58,18 +58,19 @@ def get_university_logo(Sess, university_name:str)->str():
     return soup.find_all('img')[1].attrs['src']
 
 def professors_info(professors:list)->str():
-    card = '''<div class="w3-col w3-center">
-            %s <br>
-            %s <br>
+
+    card = '''<div class="w3-third w3-center w3-container">
+            <p>%s <br>%s <br>
             <a target="_blank" href="%s">Auto</a>&nbsp;
             <a target="_blank" href="%s">Scholar</a>&nbsp;
             <a target="_blank" href="%s">Search</a>&nbsp;
+            </p>
             </div>'''
-    grid = '<div class="w3-row-padding w3-margin-bottom w3-margin-top">'
+    grid = '<div class="w3-container w3-row-padding">'
     idx = 1
     for i, prof in enumerate(professors):
         if prof['break']:
-            grid += '<hr>'
+            grid += ' </div><hr><div class="w3-container w3-row-padding">'
             idx = 1
             continue
 
@@ -78,7 +79,7 @@ def professors_info(professors:list)->str():
         if i == len(professors) - 1:
             grid += '</div>'
         elif idx % 3 == 0:
-            grid += ' </div><div class="w3-row-padding w3-margin-bottom w3-margin-top">'
+            grid += ' </div><div class="w3-container w3-row-padding">'
 
         idx += 1
 
