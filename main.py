@@ -1,15 +1,19 @@
 import os
 from urllib.parse import quote
 import urllib.request
+import requests
 
 from bs4 import BeautifulSoup
 from sanic import Sanic
 from sanic import response
 
 app = Sanic("Professors")
+S = requests.Session()
 
 google_base_link = 'https://www.google.com/search?q=%s+%s&ie=UTF-8'
 scholar_base_link = 'https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=%s+%s'
+university_logo_base_link = 'https://www.google.com/search?q=university+%s+logo+wikipedia&sclient=img&tbm=isch'
+
 base_row = '''<tr>
     <td>%s &nbsp; &nbsp;</td>
     <td><a target="_blank" href="%s">auto</a>&nbsp; &nbsp;</td>
@@ -20,8 +24,19 @@ base_row = '''<tr>
 
 @app.route("/")
 async def root(request):
+
     universities = [university.replace('.txt', '').strip() for university in os.listdir('lists/')]
-    items = ['<a href="%s">%s</a><br>' % (quote(university), university) for university in universities]
+    items = list()
+    for university in universities:
+        uni_logo_page = S.get(university_logo_base_link % university)
+        soup = BeautifulSoup(uni_logo_page.text, 'html.parser')
+        uni_logo = soup.find_all('img')[1].attrs['src']
+
+        img_tag = '<img src=%s>' % uni_logo
+        a_tag = '<a href="%s">%s</a><br>' % (quote(university), university)
+        items.append(img_tag + '&nbsp;' + a_tag)
+
+    # items = [ for university in universities]
     return response.html('<html><body><h3>Universities</h3>\n%s</body></html>' % '\n'.join(items))
 
 
@@ -55,8 +70,9 @@ async def list_professors(request, university):
 async def redirect_to_prof_page(request, university, name):
     university_quoted, name_quoted = quote(university), quote(name)
     scholar = scholar_base_link % (name_quoted, university_quoted)
-    html_page = urllib.request.urlopen(scholar)
-    soup = BeautifulSoup(html_page, 'html.parser')
+    # html_page = urllib.request.urlopen(scholar)
+    html_page = S.get(scholar)
+    soup = BeautifulSoup(html_page.text)
     links = soup.select('a.gs_ai_pho')
     if len(links) == 0:
         google = google_base_link % (name_quoted, university_quoted)
@@ -69,3 +85,4 @@ async def redirect_to_prof_page(request, university, name):
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8000, auto_reload=True)
+
