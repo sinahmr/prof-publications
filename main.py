@@ -24,14 +24,14 @@ async def root(request):
     items = list()
     for university in universities:
         uni_logo = utils.get_university_logo(Sess, university)
-        logo_tag = utils.make_img_tag(uni_logo, (100, 100), classes="w3-margin w3-padding-left w3-padding-right")
+        logo_tag = utils.make_img_tag(uni_logo, (80, 80), classes="w3-margin w3-padding-left w3-padding-right")
         href_tag = utils.make_link_tag(quote(university), utils.titlify(university))
         items.append({
             'logo': logo_tag,
             'href': href_tag
         })
 
-    uni_list = utils.tabelify_universities(items)
+    uni_list = utils.tablify_universities(items)
     return response.html(utils.htmlify("Universities", "Universities", uni_list))
 
 @app.route("/favicon.ico")
@@ -47,7 +47,7 @@ async def list_professors(request, university):
         for i, line in enumerate(f):
             name = line.strip()
             if not name:
-                items.append({'break':True}) # </table><hr><table>
+                items.append({'break':True})
                 continue
             if name in professors or name.startswith('#'):
                 continue
@@ -57,14 +57,10 @@ async def list_professors(request, university):
             professor_pic_page = Sess.get(prof_auto_profile_pic % (name, university))
             soup = BeautifulSoup(professor_pic_page.text, 'html.parser')
             professor_pic = soup.find_all('img')[1].attrs['src']
-            img_tag = utils.make_img_tag(professor_pic, (100, 120), "w3-round")
+            img_tag = utils.make_img_tag(professor_pic, (100, 120), "w3-round w3-card")
             name_quoted = quote(name)
             university_quoted = quote(university)
             auto = "%s/%s" % (university_quoted, name_quoted)
-            # row = base_row % (name, auto, img_tag, scholar_base_link % (name_quoted, university_quoted), google_base_link % (name_quoted, university_quoted))
-            # items.append(row)
-
-            # content = "<table>%s</table>" % '\n'.join(items)
 
             items.append({
                 'break': False,
@@ -83,7 +79,6 @@ async def list_professors(request, university):
     heading = utils.make_link_tag(quote("/"), heading, "w3-text-red")
     header = utils.titlify(university)
     return response.html(utils.htmlify(header, heading, content))
-
 
 @app.route("/<university>/<name>")
 async def redirect_to_prof_page(request, university, name):
