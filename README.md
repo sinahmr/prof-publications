@@ -28,7 +28,7 @@ In each of the university's pages, there are 3 links beside professors' names:
   - If multiple results are found, redirects you to the Google Scholar Profiles search page, so that you can choose your desired profile;
   - If no result is found in Google Scholar Profiles, you will be redirected to Google search, so maybe you can find about the professor's publications somewhere else (maybe in his/her home page).
 
-Two example `.txt` files are added in the [lists](./lists) folder. Note that names that appear multiple times in the `.txt` files will be shown only once in the list of professors.
+A few example `.txt` files are added in the [lists](./lists) folder. Note that names that appear multiple times in the `.txt` files will be shown only once in the list of professors.
 
 ## Update Feb. 12, 2020   
 Added some unimportant features:
