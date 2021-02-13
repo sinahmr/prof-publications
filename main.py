@@ -17,9 +17,10 @@ prof_auto_profile_pic = 'https://www.google.com/search?q=%s+university+%s+profil
 
 Sess = requests.Session()
 
+
 @app.route("/")
 async def root(request):
-    universities = [university.replace('.txt', '').strip() for university in os.listdir('lists/')]
+    universities = sorted([university.replace('.txt', '').strip() for university in os.listdir('lists/')])
     items = list()
     for university in universities:
         uni_logo = utils.get_university_logo(Sess, university)
@@ -33,9 +34,11 @@ async def root(request):
     uni_list = utils.tablify_universities(items)
     return response.html(utils.htmlify("Universities", "Universities", uni_list))
 
+
 @app.route("/favicon.ico")
 async def favicon(request):
     return response.empty()
+
 
 @app.route("/<university>")
 async def list_professors(request, university):
@@ -46,7 +49,7 @@ async def list_professors(request, university):
         for i, line in enumerate(f):
             name = line.strip()
             if not name:
-                items.append({'break':True})
+                items.append({'break': True})
                 continue
             if name in professors or name.startswith('#'):
                 continue
@@ -79,6 +82,7 @@ async def list_professors(request, university):
     header = utils.titlify(university)
     return response.html(utils.htmlify(header, heading, content))
 
+
 @app.route("/<university>/<name>")
 async def redirect_to_prof_page(request, university, name):
     university_quoted, name_quoted = quote(university), quote(name)
@@ -93,8 +97,9 @@ async def redirect_to_prof_page(request, university, name):
     elif len(links) > 1:
         return response.redirect(scholar)
     else:
-        return response.redirect('https://scholar.google.com%s&view_op=list_works&sortby=pubdate' % links[0].get('href'))
+        return response.redirect(
+            'https://scholar.google.com%s&view_op=list_works&sortby=pubdate' % links[0].get('href'))
 
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=8000, auto_reload=True)
+    app.run(host='127.0.0.1', port=8000, workers=2, auto_reload=True)

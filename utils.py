@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 
-def titlify(title:str)->str():
+
+def titlify(title: str) -> str():
     """Capitalize first letters of every word in title except conjunction letters
        E.g., titlify('welcome to the new world') ==> 'Welcome to the New World'
     Arguments:
@@ -9,15 +10,17 @@ def titlify(title:str)->str():
         A string: The titlified version of the input string
     """
     prepositions = ["and", "or", "the", "a", "of", "in", "at", "is", "to"]
-    return "".join(["%s "%word.lower()
-            if word in prepositions
-            else "%s "%word.capitalize()
-            for word in str(title).lower().split()])[:-1]
+    return "".join(["%s " % word.lower()
+                    if word in prepositions
+                    else "%s " % word.capitalize()
+                    for word in str(title).lower().split()])[:-1]
+
 
 styles = ['<link rel="stylesheet" href="styles/w3.css">',
-          '<link rel="stylesheet" href="styles/style.css">',]
+          '<link rel="stylesheet" href="styles/style.css">', ]
 
-def htmlify(head_title:str, heading:str, content:str)->str():
+
+def htmlify(head_title: str, heading: str, content: str) -> str():
     """ Creates html, head, content, and footer tags.
     Arguments:
         head_title: used in <head> tag as the title of the page
@@ -37,7 +40,8 @@ def htmlify(head_title:str, heading:str, content:str)->str():
 
     return html
 
-def make_footer(title:str=None, year='2021', git_repo='https://github.com/nrasadi/prof-publications')->str():
+
+def make_footer(title: str = None, year='2021', git_repo='https://github.com/sinahmr/prof-publications') -> str():
     """Creates a simple footer content
     Arguments:
         title: a title for the footer. (default: Professors\'s Publications Finder)
@@ -45,14 +49,15 @@ def make_footer(title:str=None, year='2021', git_repo='https://github.com/nrasad
         git_repo: a url link to the reference git repository
     Returns: an string containing the footer tag and its inner content.
     """
-    title = "Professors\'s Publications Finder" if not title else title
+    title = "Professors\' Publications Finder" if not title else title
     git_repo = f'<a target="_blank" class="w3-text-red w3-right" href={git_repo}>Github</a>' if git_repo else ""
     return f'''<footer class=" w3-footer">
-            {title}, &nbsp; {year}
+            {title}, {year}
             {git_repo}
             </footer>'''
 
-def make_img_tag(img:str, size:(int, int)=(50, 50), classes:str='img')->str():
+
+def make_img_tag(img: str, size: (int, int) = (50, 50), classes: str = 'img') -> str():
     """ Creates img tag.
     Arguments:
         img: source url of the image
@@ -63,7 +68,8 @@ def make_img_tag(img:str, size:(int, int)=(50, 50), classes:str='img')->str():
     img_tag = f'''<img src=%s width="{size[0]}" height="{size[1]}" class={classes}>''' % img
     return img_tag.strip()
 
-def make_link_tag(link:str, title:str, classes:str='link')->str():
+
+def make_link_tag(link: str, title: str, classes: str = 'link') -> str():
     """Creates a tag.
     Arguments:
         link: href url of the <a> tag
@@ -74,7 +80,8 @@ def make_link_tag(link:str, title:str, classes:str='link')->str():
     href = '<a href="%s" classes="%s">%s</a>\n' % (link, classes, title)
     return href
 
-def get_university_logo(Sess, university_name:str)->str():
+
+def get_university_logo(Sess, university_name: str) -> str():
     """ Taking a request session and a university name, it finds an image url representing the university logo.
     Arguments:
         Sess: an instance of requests.Session()
@@ -87,7 +94,8 @@ def get_university_logo(Sess, university_name:str)->str():
     soup = BeautifulSoup(uni_logo_page.text, 'html.parser')
     return soup.find_all('img')[1].attrs['src']
 
-def professors_info(professors:list)->str():
+
+def professors_info(professors: list) -> str():
     """Generates university professor's page content
     Arguments:
         professors: a list of professors. each element is a dictionary with the following keys:
@@ -100,10 +108,10 @@ def professors_info(professors:list)->str():
     Returns: the page content string
     """
     begin_row = '<div class="w3-container w3-row-padding ">'
-    card = '''<div class="w3-third w3-center w3-container w3-margin-top ">
+    card = '''<div class="w3-quarter w3-center w3-container w3-margin-top ">
             %s <br>%s <br>
-            <a target="_blank" href="%s">Auto</a>&nbsp;
-            <a target="_blank" href="%s">Scholar</a>&nbsp;
+            <a target="_blank" href="%s">Auto</a>&nbsp;|&nbsp;
+            <a target="_blank" href="%s">Scholar</a>&nbsp;|&nbsp;
             <a target="_blank" href="%s">Search</a>&nbsp;
             </div>'''
     grid = begin_row
@@ -118,14 +126,15 @@ def professors_info(professors:list)->str():
 
         if i == len(professors) - 1:
             grid += '</div>'
-        elif idx % 3 == 0:
+        elif idx % 4 == 0:
             grid += ' </div>%s' % begin_row
 
         idx += 1
 
     return BeautifulSoup(grid, 'html.parser')
 
-def tablify_universities(universities:list)->str():
+
+def tablify_universities(universities: list) -> str():
     """Create a table list from universities
     Arguments:
         universities: a list of universities. Each element is a dictionary with the following keys:
