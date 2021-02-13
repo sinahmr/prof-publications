@@ -1,0 +1,57 @@
+header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  color: #333;
+  background-color: #fff;
+  border-bottom: 1.5vw solid #333;
+  padding: 1em 0 .5em 5em;
+  z-index: 1;
+}
+
+header.img{
+  margin: 0px 0px 0px 0px;
+}
+
+.content{
+  margin-top: 10em;
+  height: 100% - 3em;
+  margin-bottom: 10em;
+  z-index: -1;
+}
+
+footer{
+  background-color: #333;
+  color: #ddd;
+  position: fixed;
+  /*position: sticky;*/
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: .5em 1em .5em 1em;
+}
+
+a{
+ text-decoration: none;
+ color: #0c6bab;
+ font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 500;
+  src: url('fonts/Raleway/raleway-v18-latin_cyrillic-500.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('fonts/raleway-v18-latin_cyrillic-500.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('fonts/raleway-v18-latin_cyrillic-500.woff2') format('woff2'), /* Super Modern Browsers */
+       url('fonts/raleway-v18-latin_cyrillic-500.woff') format('woff'), /* Modern Browsers */
+       url('fonts/raleway-v18-latin_cyrillic-500.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('fonts/raleway-v18-latin_cyrillic-500.svg#Raleway') format('svg'); /* Legacy iOS */
+}
+
+html, body, h1, h2, h3, h4, h5, h6{
+   font-family: "Raleway" !important;
+   font-weight: 500;
+}
